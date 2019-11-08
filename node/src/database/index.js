@@ -2,10 +2,11 @@ import Sequelize from 'sequelize';
 
 import Usuario from '../app/models/Usuario';
 import Carrinho from '../app/models/Carrinho';
+import UsuarioCarrinho from '../app/models/UsuarioCarrinho';
 
 import databaseConfig from '../config/database';
 
-const models = [Usuario, Carrinho];
+const models = [Usuario, Carrinho, UsuarioCarrinho];
 
 class Database {
   constructor() {
@@ -16,7 +17,7 @@ class Database {
   init() {
     this.connection = new Sequelize(databaseConfig);
 
-    models.forEach(model => model.init(this.connection));
+    models.map(model => model.init(this.connection));
   }
 
   associateInit() {

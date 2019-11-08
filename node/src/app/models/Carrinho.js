@@ -19,6 +19,10 @@ class Usuario extends Model {
       }
     );
   }
+
+  static associate(models) {
+    this.hasMany(models.UsuarioCarrinho, { foreignKey: 'fk_Carrinho_id' });
+  }
 }
 
 export default Usuario;
