@@ -19,31 +19,32 @@ class SetorController {
     const { nome, carrinho, dados } = req.body;
 
     const carExitis = await Carrinho.findOne({ where: { nome: carrinho } });
-    
+
     if (!carExitis) {
-        return res.status(400).json({ erro: 'Carrinho não cadastrado' });
+    return res.status(400).json({ erro: 'Carrinho não cadastrado' });
     }
 
     const car_id = carExitis.id;
 
-    calibrationExitis = await CalibracaoCarrinho.findOne({ where: { nome, fk_Carrinho_id: car_id } });
+    const calibrationExitis = await CalibracaoCarrinho.findOne({ where: { nome, fk_Carrinho_id: car_id } });
 
     if (calibrationExitis) {
         return res.status(400).json({ erro: 'Essa calibração já existe' });
     }
 
     const { id } = await CalibracaoCarrinho.create({
-        nome,
-        fk_Carrinho_id: car_id
+        nome: nome,
+        fk_Carrinho_id: car_id,
 
     });
 
-    dados.forEach(dado => {
+    for( dado of dados ) {
         const nomeDado = dado.nome;
         const descricaoDado = dado.descricao;
         const valorDado = dado.valor;
         
-        dadoExitis = await TipoDadoCalibracaoCarrinho.findOne({ where: { nome: nomeDado } });
+        const dadoExitis = await TipoDadoCalibracaoCarrinho.findOne({ where: { nome: nomeDado } });
+        
         
         if(!dadoExitis){
             await TipoDadoCalibracaoCarrinho.create({
@@ -72,7 +73,8 @@ class SetorController {
             })
         }
    
-    });
+    };
+
 
     return res.json({
       id,
