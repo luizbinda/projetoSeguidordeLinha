@@ -1,14 +1,26 @@
 import Sequelize from 'sequelize';
 
-import Usuario from '../app/models/Usuario';
+import CalibracaoCarrinho from '../app/models/CalibracaoCarrinho';
 import Carrinho from '../app/models/Carrinho';
-import UsuarioCarrinho from '../app/models/UsuarioCarrinho';
+import DadosCalibracaoCarrinho from '../app/models/DadosCalibracaoCarrinho';
 import Pista from '../app/models/Pista';
 import Setor from '../app/models/Setor';
+import TipoDadoCalibracaoCarrinho from '../app/models/TipoDadoCalibracaoCarrinho';
+import Usuario from '../app/models/Usuario';
+import UsuarioCarrinho from '../app/models/UsuarioCarrinho';
 
 import databaseConfig from '../config/database';
 
-const models = [Usuario, Carrinho, UsuarioCarrinho, Pista, Setor];
+const models = [
+    Usuario,
+    Carrinho,
+    UsuarioCarrinho,
+    Pista,
+    Setor, 
+    CalibracaoCarrinho, 
+    DadosCalibracaoCarrinho,
+    TipoDadoCalibracaoCarrinho,
+  ];
 
 class Database {
   constructor() {

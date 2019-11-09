@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import User from '../models/Carrinho';
+import Carrinho from '../models/Carrinho';
 
 class CarrinhoController {
   async store(req, res) {
@@ -29,13 +29,13 @@ class CarrinhoController {
       largura,
     } = req.body;
 
-    const carExitis = await User.findOne({ where: { nome } });
+    const carExitis = await Carrinho.findOne({ where: { nome } });
 
     if (carExitis) {
-      return res.status(400).json({ erro: 'Carriho já cadastrado' });
+      return res.status(400).json({ erro: 'Carrinho já cadastrado' });
     }
 
-    const { id } = await User.create({
+    const { id } = await Carrinho.create({
       nome,
       tipo_motor,
       tipo_roda,
