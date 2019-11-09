@@ -5,12 +5,16 @@ import UserController from './app/Controllers/UsuarioController';
 import CarController from './app/Controllers/CarrinhoController';
 import LoginController from './app/Controllers/LoginController';
 import CarUserController from './app/Controllers/CarrinhoUsuarioController';
+import TrackController from './app/Controllers/PistaController';
+import SectorController from './app/Controllers/SetorController';
 
 const routes = new Router();
 
 routes.post('/users', UserController.store);
 routes.post('/cars', CarController.store);
 routes.post('/login', LoginController.store);
+routes.post('/tracks', TrackController.store);
+routes.post('/sectors', SectorController.store);
 
 routes.use(authMiddleware);
 
