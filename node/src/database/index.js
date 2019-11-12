@@ -2,7 +2,7 @@ import Sequelize from 'sequelize';
 
 import CalibracaoCarrinho from '../app/models/CalibracaoCarrinho';
 import Carrinho from '../app/models/Carrinho';
-import DadosCalibracaoCarrinho from '../app/models/DadosCalibracaoCarrinho';
+import DadoCalibracaoCarrinho from '../app/models/DadoCalibracaoCarrinho';
 import Pista from '../app/models/Pista';
 import Setor from '../app/models/Setor';
 import TipoDadoCalibracaoCarrinho from '../app/models/TipoDadoCalibracaoCarrinho';
@@ -19,7 +19,7 @@ const models = [
   Setor,
   CalibracaoCarrinho,
   TipoDadoCalibracaoCarrinho,
-  DadosCalibracaoCarrinho,
+  DadoCalibracaoCarrinho,
 ];
 
 class Database {

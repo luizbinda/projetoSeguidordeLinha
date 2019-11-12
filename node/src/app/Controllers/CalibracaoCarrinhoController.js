@@ -1,6 +1,8 @@
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-restricted-syntax */
 import * as Yup from 'yup';
 import Carrinho from '../models/Carrinho';
-import DadosCalibracaoCarrinho from '../models/DadosCalibracaoCarrinho';
+import DadoCalibracaoCarrinho from '../models/DadoCalibracaoCarrinho';
 import TipoDadoCalibracaoCarrinho from '../models/TipoDadoCalibracaoCarrinho';
 import CalibracaoCarrinho from '../models/CalibracaoCarrinho';
 
@@ -33,45 +35,43 @@ class SetorController {
     if (calibrationExitis) {
       return res.status(400).json({ erro: 'Essa calibração já existe' });
     }
-    /*
+
     const { id } = await CalibracaoCarrinho.create({
       nome,
       fk_Carrinho_id: car_id,
     });
-    */
+
     for (const dado of dados) {
       const nomeDado = dado.nome;
       const descricaoDado = dado.descricao;
       const valorDado = dado.valor;
 
-      const dadoExitis = await TipoDadoCalibracaoCarrinho.findOne({
+      let dadoExitis = await TipoDadoCalibracaoCarrinho.findOne({
         where: { nome: nomeDado },
       });
 
       if (!dadoExitis) {
         await TipoDadoCalibracaoCarrinho.create({
           nome: nomeDado,
+          discricao: descricaoDado,
         });
       }
 
-      const dado_id = dadoExitis
-        ? dadoExitis.id
-        : ({ id } = await TipoDadoCalibracaoCarrinho.create({
-            nome: nomeDado,
-            descricao: descricaoDado,
-          }));
+      dadoExitis = await TipoDadoCalibracaoCarrinho.findOne({
+        where: { nome: nomeDado },
+      });
 
-      valorExitis = await DadosCalibracaoCarrinho.findOne({
+      const valorExitis = await DadoCalibracaoCarrinho.findOne({
         where: {
-          nome: valorDado,
-          fk_TipoDadoCalibracaoCarrinho_id: dado_id,
+          valor: valorDado,
+          fk_TipoDadoCalibracaoCarrinho_id: dadoExitis.id,
         },
       });
 
       if (!valorExitis) {
-        await DadosCalibracaoCarrinho.create({
+        await DadoCalibracaoCarrinho.create({
           valor: valorDado,
-          fk_TipoDadoCalibracaoCarrinho_id: dado_id,
+          fk_TipoDadoCalibracaoCarrinho_id: dadoExitis.id,
           fk_CalibracaoCarrinho_id: id,
         });
       }

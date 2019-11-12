@@ -5,7 +5,7 @@ class TipoDadoCalibracaoCarrinho extends Model {
     super.init(
       {
         nome: Sequelize.STRING,
-        descricao: {
+        discricao: {
           type: Sequelize.STRING,
           allowNull: true,
         },

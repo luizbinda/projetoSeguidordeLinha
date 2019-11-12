@@ -2,7 +2,7 @@ import Sequelize, { Model } from 'sequelize';
 import Carrinho from './Carrinho';
 import TipoDadoCalibracaoCarrinho from './TipoDadoCalibracaoCarrinho';
 
-class DadosCalibracaoCarrinho extends Model {
+class DadoCalibracaoCarrinho extends Model {
   static init(sequelize) {
     super.init(
       {
@@ -24,10 +24,10 @@ class DadosCalibracaoCarrinho extends Model {
       },
       {
         sequelize,
-        tableName: 'DadosCalibracaoCarrinho',
+        tableName: 'DadoCalibracaoCarrinho',
       }
     );
   }
 }
 
-export default DadosCalibracaoCarrinho;
+export default DadoCalibracaoCarrinho;
