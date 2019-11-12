@@ -27,10 +27,6 @@ class Usuario extends Model {
   checkPassword(senha) {
     return bcrypt.compare(senha, this.senha_hash);
   }
-
-  static associate(models) {
-    this.hasMany(models.UsuarioCarrinho, { foreignKey: 'fk_Usuario_id' });
-  }
 }
 
 export default Usuario;

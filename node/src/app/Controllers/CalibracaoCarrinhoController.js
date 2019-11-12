@@ -21,60 +21,61 @@ class SetorController {
     const carExitis = await Carrinho.findOne({ where: { nome: carrinho } });
 
     if (!carExitis) {
-    return res.status(400).json({ erro: 'Carrinho não cadastrado' });
+      return res.status(400).json({ erro: 'Carrinho não cadastrado' });
     }
 
     const car_id = carExitis.id;
 
-    const calibrationExitis = await CalibracaoCarrinho.findOne({ where: { nome, fk_Carrinho_id: car_id } });
-
-    if (calibrationExitis) {
-        return res.status(400).json({ erro: 'Essa calibração já existe' });
-    }
-
-    const { id } = await CalibracaoCarrinho.create({
-        nome: nome,
-        fk_Carrinho_id: car_id,
-
+    const calibrationExitis = await CalibracaoCarrinho.findOne({
+      where: { nome, fk_Carrinho_id: car_id },
     });
 
-    for( dado of dados ) {
-        const nomeDado = dado.nome;
-        const descricaoDado = dado.descricao;
-        const valorDado = dado.valor;
-        
-        const dadoExitis = await TipoDadoCalibracaoCarrinho.findOne({ where: { nome: nomeDado } });
-        
-        
-        if(!dadoExitis){
-            await TipoDadoCalibracaoCarrinho.create({
-                nome: nomeDado,
-                descricao: descricaoDado,
-            });
-        }
-        
-        const dado_id = dadoExitis ? dadoExitis.id : {id} = await TipoDadoCalibracaoCarrinho.create({
+    if (calibrationExitis) {
+      return res.status(400).json({ erro: 'Essa calibração já existe' });
+    }
+    /*
+    const { id } = await CalibracaoCarrinho.create({
+      nome,
+      fk_Carrinho_id: car_id,
+    });
+    */
+    for (const dado of dados) {
+      const nomeDado = dado.nome;
+      const descricaoDado = dado.descricao;
+      const valorDado = dado.valor;
+
+      const dadoExitis = await TipoDadoCalibracaoCarrinho.findOne({
+        where: { nome: nomeDado },
+      });
+
+      if (!dadoExitis) {
+        await TipoDadoCalibracaoCarrinho.create({
+          nome: nomeDado,
+        });
+      }
+
+      const dado_id = dadoExitis
+        ? dadoExitis.id
+        : ({ id } = await TipoDadoCalibracaoCarrinho.create({
             nome: nomeDado,
             descricao: descricaoDado,
-        });
-        
-        valorExitis = await DadosCalibracaoCarrinho.findOne({
-            where: { 
-                nome: valorDado,
-                fk_TipoDadoCalibracaoCarrinho_id: dado_id,
-            } 
-        });
+          }));
 
-        if(!valorExitis){
-            await DadosCalibracaoCarrinho.create({
-                valor: valorDado,
-                fk_TipoDadoCalibracaoCarrinho_id: dado_id,
-                fk_CalibracaoCarrinho_id: id,
-            })
-        }
-   
-    };
+      valorExitis = await DadosCalibracaoCarrinho.findOne({
+        where: {
+          nome: valorDado,
+          fk_TipoDadoCalibracaoCarrinho_id: dado_id,
+        },
+      });
 
+      if (!valorExitis) {
+        await DadosCalibracaoCarrinho.create({
+          valor: valorDado,
+          fk_TipoDadoCalibracaoCarrinho_id: dado_id,
+          fk_CalibracaoCarrinho_id: id,
+        });
+      }
+    }
 
     return res.json({
       id,

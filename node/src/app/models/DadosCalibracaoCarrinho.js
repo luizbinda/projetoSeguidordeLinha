@@ -8,18 +8,18 @@ class DadosCalibracaoCarrinho extends Model {
       {
         valor: Sequelize.STRING,
         fk_TipoDadoCalibracaoCarrinho_id: {
-            type: Sequelize.INTEGER,
-            references: {
-              model: TipoDadoCalibracaoCarrinho,
-              key: 'id',
-            },
+          type: Sequelize.INTEGER,
+          references: {
+            model: TipoDadoCalibracaoCarrinho,
+            key: 'id',
+          },
         },
         fk_CalibracaoCarrinho_id: {
-            type: Sequelize.INTEGER,
-            references: {
-              model: Carrinho,
-              key: 'id',
-            },
+          type: Sequelize.INTEGER,
+          references: {
+            model: Carrinho,
+            key: 'id',
+          },
         },
       },
       {

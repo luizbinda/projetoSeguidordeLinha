@@ -12,15 +12,15 @@ import UsuarioCarrinho from '../app/models/UsuarioCarrinho';
 import databaseConfig from '../config/database';
 
 const models = [
-    Usuario,
-    Carrinho,
-    UsuarioCarrinho,
-    Pista,
-    Setor, 
-    CalibracaoCarrinho, 
-    DadosCalibracaoCarrinho,
-    TipoDadoCalibracaoCarrinho,
-  ];
+  Usuario,
+  Carrinho,
+  UsuarioCarrinho,
+  Pista,
+  Setor,
+  CalibracaoCarrinho,
+  TipoDadoCalibracaoCarrinho,
+  DadosCalibracaoCarrinho,
+];
 
 class Database {
   constructor() {
