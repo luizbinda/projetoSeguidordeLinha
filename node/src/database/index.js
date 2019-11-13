@@ -4,6 +4,7 @@ import CalibracaoCarrinho from '../app/models/CalibracaoCarrinho';
 import Carrinho from '../app/models/Carrinho';
 import DadoCalibracaoCarrinho from '../app/models/DadoCalibracaoCarrinho';
 import DadoLog from '../app/models/DadoLog';
+import File from '../app/models/File';
 import Log from '../app/models/Log';
 import Pista from '../app/models/Pista';
 import Setor from '../app/models/Setor';
@@ -30,6 +31,7 @@ const models = [
   SetorCalibracaoCarrinho,
   Log,
   DadoLog,
+  File,
 ];
 
 class Database {

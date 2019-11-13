@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import * as Sentry from '@sentry/node';
 import express from 'express';
+import path from 'path';
 import sentryConfig from './config/sentry';
 import 'express-async-errors';
 
@@ -20,6 +21,10 @@ class App {
   midldewares() {
     this.server.use(Sentry.Handlers.requestHandler());
     this.server.use(express.json());
+    this.server.use(
+      '/files',
+      express.static(path.resolve(__dirname, '..', 'tmp', 'uploads'))
+    );
   }
 
   routes() {

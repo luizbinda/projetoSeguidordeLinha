@@ -17,6 +17,7 @@ class Pista extends Model {
 
   static associate(models) {
     this.hasMany(models.Setor, { foreignKey: 'fk_Pista_id' });
+    this.belongsTo(models.File, { foreignKey: 'fk_files_id' });
   }
 }
 

@@ -7,6 +7,7 @@ import CalibracaoCarrinho from '../models/CalibracaoCarrinho';
 import Carrinho from '../models/Carrinho';
 import DadoLog from '../models/DadoLog';
 import TipoDadoLog from '../models/TipoDadoLog';
+import File from '../models/File';
 
 class LogController {
   async index(req, res) {
@@ -28,6 +29,11 @@ class LogController {
                 {
                   model: Pista,
                   attributes: ['nome', 'valor_linha'],
+                  include: [
+                    {
+                      model: File,
+                    },
+                  ],
                 },
               ],
             },
