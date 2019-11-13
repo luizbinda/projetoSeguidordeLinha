@@ -1,6 +1,6 @@
 import Sequelize, { Model } from 'sequelize';
 
-class Usuario extends Model {
+class Carrinho extends Model {
   static init(sequelize) {
     super.init(
       {
@@ -19,6 +19,11 @@ class Usuario extends Model {
       }
     );
   }
+
+  static associate(models) {
+    this.hasMany(models.UsuarioCarrinho, { foreignKey: 'fk_Carrinho_id' });
+    this.hasMany(models.CalibracaoCarrinho, { foreignKey: 'fk_Carrinho_id' });
+  }
 }
 
-export default Usuario;
+export default Carrinho;

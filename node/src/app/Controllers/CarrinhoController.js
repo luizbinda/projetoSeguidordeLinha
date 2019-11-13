@@ -1,5 +1,6 @@
 import * as Yup from 'yup';
 import Carrinho from '../models/Carrinho';
+import UsuarioCarrinho from '../models/UsuarioCarrinho';
 
 class CarrinhoController {
   async store(req, res) {
@@ -59,8 +60,18 @@ class CarrinhoController {
     });
   }
 
-  async update(req, res) {
-    return res.json({ ok: true });
+  async index(req, res) {
+    const carrinhos = await UsuarioCarrinho.findAll({
+      where: { fk_Usuario_id: req.userId },
+      attributes: [],
+      include: [
+        {
+          model: Carrinho,
+          attributes: ['id', 'nome'],
+        },
+      ],
+    });
+    return res.json(carrinhos);
   }
 }
 

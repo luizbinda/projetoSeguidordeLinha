@@ -5,7 +5,6 @@ import Setor from '../models/Setor';
 class SetorController {
   async store(req, res) {
     const schema = Yup.object().shape({
-      nome: Yup.string().required(),
       pista: Yup.string().required(),
       tamanho: Yup.number().required(),
     });
@@ -14,13 +13,7 @@ class SetorController {
       return res.status(400).json({ erro: 'erro de validação' });
     }
 
-    const { nome, pista, tamanho } = req.body;
-
-    const sectorExitis = await Setor.findOne({ where: { nome } });
-
-    if (sectorExitis) {
-      return res.status(400).json({ erro: 'Setor já cadastrado' });
-    }
+    const { pista, tamanho } = req.body;
 
     const trackExitis = await Pista.findOne({ where: { nome: pista } });
 
@@ -29,18 +22,29 @@ class SetorController {
     }
 
     const pista_id = trackExitis.id;
+
     const { id } = await Setor.create({
-      nome,
-      pista_id,
       tamanho,
+      fk_Pista_id: pista_id,
     });
 
     return res.json({
       id,
-      nome,
       pista,
       tamanho,
     });
+  }
+
+  async index(req, res) {
+    const carrinhos = await Setor.findAll({
+      where: { fk_Pista_id: req.params.pistaId },
+    });
+    return res.json(carrinhos);
+  }
+
+  async delete(req, res) {
+    await Setor.destroy({ where: { id: req.params.setorId } });
+    return res.json({ ok: 'foi deletado' });
   }
 }
 

@@ -1,6 +1,6 @@
 import Sequelize, { Model } from 'sequelize';
 
-class TipoDadoCalibracaoCarrinho extends Model {
+class TipoDadoLog extends Model {
   static init(sequelize) {
     super.init(
       {
@@ -12,16 +12,16 @@ class TipoDadoCalibracaoCarrinho extends Model {
       },
       {
         sequelize,
-        tableName: 'TipoDadoCalibracaoCarrinho',
+        tableName: 'TipoDadoLog',
       }
     );
   }
 
   static associate(models) {
-    this.hasMany(models.DadoCalibracaoCarrinho, {
-      foreignKey: 'fk_TipoDadoCalibracaoCarrinho_id',
+    this.hasMany(models.DadoLog, {
+      foreignKey: 'fk_TipoDadoLog_id',
     });
   }
 }
 
-export default TipoDadoCalibracaoCarrinho;
+export default TipoDadoLog;

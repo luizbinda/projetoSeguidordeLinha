@@ -20,6 +20,13 @@ class Setor extends Model {
       }
     );
   }
+
+  static associate(models) {
+    this.belongsTo(models.Pista, { foreignKey: 'fk_Pista_id' });
+    this.hasMany(models.SetorCalibracaoCarrinho, {
+      foreignKey: 'fk_Setor_id',
+    });
+  }
 }
 
 export default Setor;

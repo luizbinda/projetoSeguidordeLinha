@@ -6,7 +6,7 @@ import DadoCalibracaoCarrinho from '../models/DadoCalibracaoCarrinho';
 import TipoDadoCalibracaoCarrinho from '../models/TipoDadoCalibracaoCarrinho';
 import CalibracaoCarrinho from '../models/CalibracaoCarrinho';
 
-class SetorController {
+class CalibrationCarController {
   async store(req, res) {
     const schema = Yup.object().shape({
       nome: Yup.string().required(),
@@ -61,20 +61,11 @@ class SetorController {
         where: { nome: nomeDado },
       });
 
-      const valorExitis = await DadoCalibracaoCarrinho.findOne({
-        where: {
-          valor: valorDado,
-          fk_TipoDadoCalibracaoCarrinho_id: dadoExitis.id,
-        },
+      await DadoCalibracaoCarrinho.create({
+        valor: valorDado,
+        fk_TipoDadoCalibracaoCarrinho_id: dadoExitis.id,
+        fk_CalibracaoCarrinho_id: id,
       });
-
-      if (!valorExitis) {
-        await DadoCalibracaoCarrinho.create({
-          valor: valorDado,
-          fk_TipoDadoCalibracaoCarrinho_id: dadoExitis.id,
-          fk_CalibracaoCarrinho_id: id,
-        });
-      }
     }
 
     return res.json({
@@ -83,6 +74,29 @@ class SetorController {
       car_id,
     });
   }
+
+  async index(req, res) {
+    const carrinhos = await CalibracaoCarrinho.findAll({
+      attributes: ['nome'],
+      include: [
+        {
+          model: Carrinho,
+          attributes: ['nome'],
+        },
+        {
+          model: DadoCalibracaoCarrinho,
+          attributes: ['valor'],
+          include: [
+            {
+              model: TipoDadoCalibracaoCarrinho,
+              attributes: ['nome'],
+            },
+          ],
+        },
+      ],
+    });
+    return res.json(carrinhos);
+  }
 }
 
-export default new SetorController();
+export default new CalibrationCarController();

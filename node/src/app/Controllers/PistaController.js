@@ -34,6 +34,11 @@ class PistaController {
       valor_linha,
     });
   }
+
+  async index(req, res) {
+    const carrinhos = await Pista.findAll();
+    return res.json(carrinhos);
+  }
 }
 
 export default new PistaController();

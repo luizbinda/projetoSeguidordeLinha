@@ -20,6 +20,16 @@ class CalibracaoCarrinho extends Model {
       }
     );
   }
+
+  static associate(models) {
+    this.belongsTo(models.Carrinho, { foreignKey: 'fk_Carrinho_id' });
+    this.hasMany(models.DadoCalibracaoCarrinho, {
+      foreignKey: 'fk_CalibracaoCarrinho_id',
+    });
+    this.hasMany(models.SetorCalibracaoCarrinho, {
+      foreignKey: 'fk_CalibracaoCarrinho_id',
+    });
+  }
 }
 
 export default CalibracaoCarrinho;

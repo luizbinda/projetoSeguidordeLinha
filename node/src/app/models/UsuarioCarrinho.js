@@ -30,6 +30,11 @@ class UsuarioCarrinho extends Model {
       }
     );
   }
+
+  static associate(models) {
+    this.belongsTo(models.Usuario, { foreignKey: 'fk_Usuario_id' });
+    this.belongsTo(models.Carrinho, { foreignKey: 'fk_Carrinho_id' });
+  }
 }
 
 export default UsuarioCarrinho;

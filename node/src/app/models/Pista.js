@@ -14,6 +14,10 @@ class Pista extends Model {
       }
     );
   }
+
+  static associate(models) {
+    this.hasMany(models.Setor, { foreignKey: 'fk_Pista_id' });
+  }
 }
 
 export default Pista;

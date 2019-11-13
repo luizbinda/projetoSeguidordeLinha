@@ -1,16 +1,21 @@
 import Sequelize, { Model } from 'sequelize';
+import Setor from './Setor';
 import CalibracaoCarrinho from './CalibracaoCarrinho';
-import TipoDadoCalibracaoCarrinho from './TipoDadoCalibracaoCarrinho';
 
-class DadoCalibracaoCarrinho extends Model {
+class SetorCalibracaoCarrinho extends Model {
   static init(sequelize) {
     super.init(
       {
-        valor: Sequelize.STRING,
-        fk_TipoDadoCalibracaoCarrinho_id: {
+        KP: Sequelize.FLOAT,
+        KD: Sequelize.FLOAT,
+        KI: Sequelize.FLOAT,
+        angulo: Sequelize.FLOAT,
+        velocidade: Sequelize.FLOAT,
+        erro_desejado: Sequelize.FLOAT,
+        fk_Setor_id: {
           type: Sequelize.INTEGER,
           references: {
-            model: TipoDadoCalibracaoCarrinho,
+            model: Setor,
             key: 'id',
           },
         },
@@ -24,19 +29,22 @@ class DadoCalibracaoCarrinho extends Model {
       },
       {
         sequelize,
-        tableName: 'DadoCalibracaoCarrinho',
+        tableName: 'Setor_CalibracaoCarrinho',
       }
     );
   }
 
   static associate(models) {
+    this.belongsTo(models.Setor, {
+      foreignKey: 'fk_Setor_id',
+    });
     this.belongsTo(models.CalibracaoCarrinho, {
       foreignKey: 'fk_CalibracaoCarrinho_id',
     });
-    this.belongsTo(models.TipoDadoCalibracaoCarrinho, {
-      foreignKey: 'fk_TipoDadoCalibracaoCarrinho_id',
+    this.hasMany(models.Log, {
+      foreignKey: 'fk_Setor_CalibracaoCarrinho_id',
     });
   }
 }
 
-export default DadoCalibracaoCarrinho;
+export default SetorCalibracaoCarrinho;

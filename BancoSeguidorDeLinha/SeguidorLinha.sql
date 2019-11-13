@@ -42,7 +42,6 @@ CREATE TABLE Usuario_Carrinho (
 
 CREATE TABLE Setor (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    id_pista INTEGER,
     tamanho FLOAT,
     fk_Pista_id INTEGER
 );
@@ -167,3 +166,4 @@ ALTER TABLE DadoCalibracaoCarrinho ADD CONSTRAINT FK_DadoCalibracaoCarrinho_2
     FOREIGN KEY (fk_TipoDadoCalibracaoCarrinho_id)
     REFERENCES TipoDadoCalibracaoCarrinho (id)
     ON DELETE RESTRICT;
+
