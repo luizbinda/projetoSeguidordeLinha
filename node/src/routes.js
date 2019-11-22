@@ -26,17 +26,17 @@ routes.post('/sectors', SectorController.store);
 routes.post('/calibration', CalibrationCarController.store);
 routes.post('/files', upload.single('file'), FileController.store);
 
-routes.use(authMiddleware);
-
-routes.post('/car_user', CarUserController.store);
 routes.put('/users', UserController.update);
 
-routes.get('/cars', CarController.index);
 routes.get('/tracks', TrackController.index);
 routes.get('/sectors/:pistaId', SectorController.index);
 routes.get('/calibrations', CalibrationCarController.index);
 routes.get('/logs', LogController.index);
+routes.get('/cars/:id', CarController.index);
 
+routes.use(authMiddleware);
+
+routes.post('/car_user', CarUserController.store);
 routes.delete('/sectors/:setorId', SectorController.delete);
 
 export default routes;

@@ -62,7 +62,7 @@ class CarrinhoController {
 
   async index(req, res) {
     const carrinhos = await UsuarioCarrinho.findAll({
-      where: { fk_Usuario_id: req.userId },
+      where: { fk_Usuario_id: req.params.id },
       attributes: [],
       include: [
         {

@@ -12,7 +12,12 @@ import File from '../models/File';
 class LogController {
   async index(req, res) {
     const log = await Log.findAll({
-      attributes: ['tempo', 'quantidade_fora_pista', 'distancia_percorrida'],
+      attributes: [
+        'id',
+        'tempo',
+        'quantidade_fora_pista',
+        'distancia_percorrida',
+      ],
       include: [
         {
           model: Tentativa,

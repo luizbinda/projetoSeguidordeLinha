@@ -1,5 +1,6 @@
 import * as Yup from 'yup';
 import Pista from '../models/Pista';
+import File from '../models/File';
 
 class PistaController {
   async store(req, res) {
@@ -36,8 +37,16 @@ class PistaController {
   }
 
   async index(req, res) {
-    const carrinhos = await Pista.findAll();
-    return res.json(carrinhos);
+    const pistas = await Pista.findAll({
+      attributes: ['id', 'nome', 'quantidade_setores'],
+      include: [
+        {
+          model: File,
+          attributes: ['id', 'path', 'name', 'url'],
+        },
+      ],
+    });
+    return res.json(pistas);
   }
 }
 
