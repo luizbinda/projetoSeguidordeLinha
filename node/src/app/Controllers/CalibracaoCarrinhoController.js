@@ -10,7 +10,7 @@ class CalibrationCarController {
   async store(req, res) {
     const schema = Yup.object().shape({
       nome: Yup.string().required(),
-      carrinho: Yup.string().required(),
+      carrinho: Yup.number().required(),
       dados: Yup.array().required(),
     });
 
@@ -20,7 +20,7 @@ class CalibrationCarController {
 
     const { nome, carrinho, dados } = req.body;
 
-    const carExitis = await Carrinho.findOne({ where: { nome: carrinho } });
+    const carExitis = await Carrinho.findOne({ where: { id: carrinho } });
 
     if (!carExitis) {
       return res.status(400).json({ erro: 'Carrinho não cadastrado' });
