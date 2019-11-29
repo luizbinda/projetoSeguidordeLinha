@@ -1,9 +1,23 @@
-import React, { Component } from 'react';
+import React from 'react';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
 
-// import { Container } from './styles';
+export default function SimpleSelect({ list, name }) {
+  const [item, setItem] = React.useState('');
 
-export default class Setor extends Component {
-  render() {
-    return <h1>Setor teste</h1>;
-  }
+  const handleChange = event => {
+    setItem(event.target.value);
+  };
+
+  return (
+    <>
+      <InputLabel>{name}</InputLabel>
+      <Select value={item} onChange={handleChange}>
+        {list.map(item => (
+          <MenuItem value={item.id}>{item.nome}</MenuItem>
+        ))}
+      </Select>
+    </>
+  );
 }
