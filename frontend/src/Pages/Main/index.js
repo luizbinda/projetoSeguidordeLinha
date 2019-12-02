@@ -24,24 +24,24 @@ export default class Main extends Component {
   handleSubmit = async evt => {
     evt.preventDefault();
 
-    const token = await api.post('/login', {
-      login: this.state.login,
-      senha: this.state.senha,
-    });
-
-    if (token.status === 200) {
-      this.setState({ token: token.data, redirect: true });
-    } else {
-      console.log(token);
+    try {
+      const token = await api.post('/login', {
+        login: this.state.login,
+        senha: this.state.senha,
+      });
+      if (token.status === 200) {
+        this.setState({ token: token.data, redirect: true });
+      }
+    } catch (err) {
+      console.log(err);
+      alert('Usuario ou Senha Invalido!');
     }
   };
 
   render() {
     const { redirect, token } = this.state;
     if (redirect) {
-      return (
-        <Redirect to={{ pathname: '/calibracao', state: { token: token } }} />
-      );
+      return <Redirect to={{ pathname: '/menu', state: { token: token } }} />;
     } else {
       return (
         <Container>
