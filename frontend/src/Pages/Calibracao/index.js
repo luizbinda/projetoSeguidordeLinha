@@ -10,6 +10,7 @@ import api from '../../services/api';
 
 export default class Calibracao extends Component {
   state = {
+    token: this.props.location.state.token,
     carrinhos: [],
     pistas: [],
     setores: [],
@@ -22,8 +23,9 @@ export default class Calibracao extends Component {
   };
 
   async componentDidMount() {
+    const { token } = this.state;
     const [carrinhos, pistas] = await Promise.all([
-      api.get('/cars/1'),
+      api.get(`/cars/${token.user.id}`),
       api.get('/tracks'),
     ]);
 
