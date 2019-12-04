@@ -30,8 +30,10 @@ routes.put('/users', UserController.update);
 
 routes.get('/tracks', TrackController.index);
 routes.get('/sectors/:pistaId', SectorController.index);
-routes.get('/calibrations', CalibrationCarController.index);
+routes.get('/calibrations/:id', CalibrationCarController.index);
+routes.get('/calibration/:id', CalibrationCarController.show);
 routes.get('/logs', LogController.index);
+routes.get('/log/:id', LogController.show);
 routes.get('/cars/:id', CarController.index);
 
 routes.use(authMiddleware);

@@ -5,9 +5,10 @@ import Container from '../../components/Container';
 import { Form, SubmitButton } from './styles';
 import api from '../../services/api';
 
+import { login, setLogado } from '../../services/auth';
+
 export default class Main extends Component {
   state = {
-    token: {},
     login: '',
     senha: '',
     redirect: false,
@@ -30,7 +31,9 @@ export default class Main extends Component {
         senha: this.state.senha,
       });
       if (token.status === 200) {
-        this.setState({ token: token.data, redirect: true });
+        login(token.data);
+        setLogado(1);
+        this.setState({ redirect: true });
       }
     } catch (err) {
       console.log(err);
@@ -39,9 +42,9 @@ export default class Main extends Component {
   };
 
   render() {
-    const { redirect, token } = this.state;
+    const { redirect } = this.state;
     if (redirect) {
-      return <Redirect to={{ pathname: '/menu', state: { token: token } }} />;
+      return <Redirect to={{ pathname: '/calibracao' }} />;
     } else {
       return (
         <Container>

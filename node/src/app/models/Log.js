@@ -1,6 +1,6 @@
 import Sequelize, { Model } from 'sequelize';
 import Tentativa from './Tentativa';
-import SetorCalibracaoCarrinho from './SetorCalibracaoCarrinho';
+import CalibracaoCarrinho from './CalibracaoCarrinho';
 
 class Log extends Model {
   static init(sequelize) {
@@ -16,10 +16,10 @@ class Log extends Model {
             key: 'id',
           },
         },
-        fk_Setor_CalibracaoCarrinho_id: {
+        fk_CalibracaoCarrinho_id: {
           type: Sequelize.INTEGER,
           references: {
-            model: SetorCalibracaoCarrinho,
+            model: CalibracaoCarrinho,
             key: 'id',
           },
         },
@@ -38,8 +38,8 @@ class Log extends Model {
     this.hasMany(models.DadoLog, {
       foreignKey: 'fk_Log_id',
     });
-    this.belongsTo(models.SetorCalibracaoCarrinho, {
-      foreignKey: 'fk_Setor_CalibracaoCarrinho_id',
+    this.belongsTo(models.CalibracaoCarrinho, {
+      foreignKey: 'fk_CalibracaoCarrinho_id',
     });
   }
 }

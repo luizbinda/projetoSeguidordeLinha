@@ -6,12 +6,12 @@ CREATE  SCHEMA  seguidor;
 
 USE seguidor;
 
-
 CREATE TABLE Pista (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(200),
     valor_linha FLOAT,
-    quantidade_setores INTEGER
+    quantidade_setores INTEGER,
+    fk_files_id INTEGER
 );
 
 CREATE TABLE Carrinho (
@@ -53,7 +53,7 @@ CREATE TABLE Log (
     quantidade_fora_pista FLOAT,
     distancia_percorrida FLOAT,
     fk_Tentativa_id INTEGER,
-    fk_Setor_CalibracaoCarrinho_id INTEGER
+    fk_CalibracaoCarrinho_id INTEGER
 );
 
 CREATE TABLE DadoLog (
@@ -70,22 +70,11 @@ CREATE TABLE TipoDadoLog (
     nome VARCHAR(200)
 );
 
-CREATE TABLE Setor_CalibracaoCarrinho (
-    KI FLOAT,
-    KP FLOAT,
-    KD FLOAT,
-    angulo FLOAT,
-    velocidade FLOAT,
-    erro_desejado FLOAT,
-    id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    fk_Setor_id INTEGER,
-    fk_CalibracaoCarrinho_id INTEGER
-);
-
 CREATE TABLE CalibracaoCarrinho (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(200),
-    fk_Carrinho_id INTEGER
+    fk_Carrinho_id INTEGER,
+    fk_Setor_id INTEGER
 );
 
 CREATE TABLE TipoDadoCalibracaoCarrinho (
@@ -106,6 +95,17 @@ CREATE TABLE Tentativa (
     Data DATE,
     descricao VARCHAR(200)
 );
+
+CREATE TABLE File (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(200),
+    path VARCHAR(200)
+);
+
+ALTER TABLE Pista ADD CONSTRAINT FK_Pista_1
+    FOREIGN KEY (fk_files_id)
+    REFERENCES File (id)
+    ON DELETE RESTRICT;
 
 ALTER TABLE Usuario_Carrinho ADD CONSTRAINT FK_Usuario_Carrinho_1
     FOREIGN KEY (fk_Usuario_id)
@@ -128,8 +128,8 @@ ALTER TABLE Log ADD CONSTRAINT FK_Log_2
     ON DELETE RESTRICT;
 
 ALTER TABLE Log ADD CONSTRAINT FK_Log_3
-    FOREIGN KEY (fk_Setor_CalibracaoCarrinho_id)
-    REFERENCES Setor_CalibracaoCarrinho (id)
+    FOREIGN KEY (fk_CalibracaoCarrinho_id)
+    REFERENCES CalibracaoCarrinho (id)
     ON DELETE RESTRICT;
 
 ALTER TABLE DadoLog ADD CONSTRAINT FK_DadoLog
@@ -142,19 +142,14 @@ ALTER TABLE DadoLog ADD CONSTRAINT FK_DadoLog_2
     REFERENCES TipoDadoLog (id)
     ON DELETE RESTRICT;
 
-ALTER TABLE Setor_CalibracaoCarrinho ADD CONSTRAINT FK_Setor_CalibracaoCarrinho_2
-    FOREIGN KEY (fk_Setor_id)
-    REFERENCES Setor (id)
-    ON DELETE RESTRICT;
-
-ALTER TABLE Setor_CalibracaoCarrinho ADD CONSTRAINT FK_Setor_CalibracaoCarrinho_3
-    FOREIGN KEY (fk_CalibracaoCarrinho_id)
-    REFERENCES CalibracaoCarrinho (id)
-    ON DELETE RESTRICT;
-
-ALTER TABLE CalibracaoCarrinho ADD CONSTRAINT FK_CalibracaoCarrinho_2
+ALTER TABLE CalibracaoCarrinho ADD CONSTRAINT FK_CalibracaoCarrinho
     FOREIGN KEY (fk_Carrinho_id)
     REFERENCES Carrinho (id)
+    ON DELETE CASCADE;
+
+ALTER TABLE CalibracaoCarrinho ADD CONSTRAINT FK_CalibracaoCarrinho_2
+    FOREIGN KEY (fk_Setor_id)
+    REFERENCES Setor (id)
     ON DELETE CASCADE;
 
 ALTER TABLE DadoCalibracaoCarrinho ADD CONSTRAINT FK_DadoCalibracaoCarrinho
@@ -166,4 +161,7 @@ ALTER TABLE DadoCalibracaoCarrinho ADD CONSTRAINT FK_DadoCalibracaoCarrinho_2
     FOREIGN KEY (fk_TipoDadoCalibracaoCarrinho_id)
     REFERENCES TipoDadoCalibracaoCarrinho (id)
     ON DELETE RESTRICT;
+
+alter table CalibracaoCarrinho add column data varchar(20);
+alter table CalibracaoCarrinho drop column data
 

@@ -1,18 +1,16 @@
 import React, { Component } from 'react';
 
-import { FaPlus } from 'react-icons/all';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
-import { SubmitButton } from './styles';
-import { Redirect } from 'react-router-dom';
 
 import api from '../../services/api';
+import { getToken } from '../../services/auth';
 
 export default class Calibracao extends Component {
   state = {
-    token: this.props.location.state.token,
+    token: '',
     carrinhos: [],
     pistas: [],
     setores: [],
@@ -21,12 +19,14 @@ export default class Calibracao extends Component {
     itemSetor: '',
     itemCarrinho: '',
     nomeCalibracao: '',
-    calibracao: [{ nome: '', valor: '' }],
+    calibracao: [],
     redirect: false,
   };
 
   async componentDidMount() {
-    const { token } = this.state;
+    const token = getToken();
+    this.setState({ token: token });
+
     const [carrinhos, pistas] = await Promise.all([
       api.get(`/cars/${token.user.id}`),
       api.get('/tracks'),
@@ -48,6 +48,29 @@ export default class Calibracao extends Component {
           this.setState({ imgPista: pista.File.url });
         }
       });
+    }
+
+    if (
+      (prevState.itemPista !== this.state.itemPista &&
+        this.state.itemPista !== '') ||
+      (prevState.itemCarrinho !== this.state.itemCarrinho &&
+        this.state.itemPista !== '')
+    ) {
+      const calibracao = await api.get(
+        `/calibration/${this.state.itemCarrinho}`
+      );
+      calibracao.data.DadoCalibracaoCarrinhos.forEach(
+        DadoCalibracaoCarrinhos => {
+          const dado = {
+            nome: DadoCalibracaoCarrinhos.TipoDadoCalibracaoCarrinho.nome,
+            valor: DadoCalibracaoCarrinhos.valor,
+          };
+          const dados = [dado, ...this.state.calibracao];
+          this.setState({ calibracao: dados });
+        }
+      );
+
+      this.setState({ nomeCalibracao: calibracao.data.nome });
     }
   }
 
@@ -72,9 +95,8 @@ export default class Calibracao extends Component {
   handleSubmit = async evt => {
     evt.preventDefault();
     const dados = this.state.calibracao;
-    const { itemCarrinho, nomeCalibracao } = this.state;
-
-    if (!nomeCalibracao || !itemCarrinho || !dados) {
+    const { itemCarrinho, nomeCalibracao, itemSetor } = this.state;
+    if (!nomeCalibracao || !itemCarrinho || !itemSetor || !dados) {
       alert('Preencha todos os campos');
     } else {
       try {
@@ -82,6 +104,7 @@ export default class Calibracao extends Component {
           nome: nomeCalibracao,
           carrinho: itemCarrinho,
           dados,
+          setor: itemSetor,
         });
 
         alert('calibracaoFeita');
@@ -118,121 +141,90 @@ export default class Calibracao extends Component {
       itemCarrinho,
       nomeCalibracao,
       imgPista,
-      token,
-      redirect,
     } = this.state;
     const lista_carrinhos = [];
     carrinhos.forEach(carrinho => lista_carrinhos.push(carrinho.Carrinho));
 
-    if (redirect) {
-      return <Redirect to={{ pathname: '/menu', state: { token: token } }} />;
-    } else {
-      return (
-        <>
-          <SubmitButton
-            onClick={() => {
-              this.setState({ redirect: true });
-            }}
-            style={{
-              background: 'white',
-              border: 0,
-              padding: '15px 5px',
-              marginLeft: '10px',
-              borderRadius: ' 4px',
-
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-
-              width: '100px',
+    return (
+      <>
+        <div
+          className="container"
+          style={{
+            backgroundColor: 'white',
+            marginTop: 80,
+            borderRadius: 18,
+            padding: 30,
+          }}
+        >
+          <InputLabel>Carrinho</InputLabel>
+          <Select
+            value={itemCarrinho}
+            onChange={event => {
+              this.setState({ itemCarrinho: event.target.value });
             }}
           >
-            Voltar
-          </SubmitButton>
-          <div
-            className="container"
-            style={{
-              backgroundColor: 'white',
-              marginTop: 25,
-              borderRadius: 18,
-              padding: 30,
+            {lista_carrinhos.map(item => (
+              <MenuItem key={item.id} value={item.id}>
+                {item.nome}
+              </MenuItem>
+            ))}
+          </Select>
+          <br />
+          <br />
+          <InputLabel>Pista</InputLabel>
+          <Select
+            value={itemPista}
+            onChange={event => {
+              this.setState({ itemPista: event.target.value });
             }}
           >
-            <InputLabel>Carrinho</InputLabel>
-            <Select
-              value={itemCarrinho}
+            {pistas.map(item => (
+              <MenuItem key={item.id} value={item.id}>
+                {item.nome}
+              </MenuItem>
+            ))}
+          </Select>
+          <div>
+            <img src={imgPista} alt="" style={{ maxWidth: '150px' }} />
+          </div>
+          <InputLabel>Setor</InputLabel>
+          <Select
+            value={itemSetor}
+            onChange={event => {
+              this.setState({ itemSetor: event.target.value });
+            }}
+          >
+            {setores.map(item => (
+              <MenuItem key={item.id} value={item.id}>
+                {item.id}
+              </MenuItem>
+            ))}
+          </Select>
+          <br />
+          <br />
+          <form>
+            <h2>Calibracao</h2>
+            <input
+              type="text"
+              placeholder={'Nome da calibração'}
+              value={nomeCalibracao}
               onChange={event => {
-                this.setState({ itemCarrinho: event.target.value });
+                this.setState({ nomeCalibracao: event.target.value });
               }}
-            >
-              {lista_carrinhos.map(item => (
-                <MenuItem key={item.id} value={item.id}>
-                  {item.nome}
-                </MenuItem>
-              ))}
-            </Select>
-            <InputLabel>Pista</InputLabel>
-            <Select
-              value={itemPista}
-              onChange={event => {
-                this.setState({ itemPista: event.target.value });
+              style={{
+                marginBottom: 10,
               }}
-            >
-              {pistas.map(item => (
-                <MenuItem key={item.id} value={item.id}>
-                  {item.nome}
-                </MenuItem>
-              ))}
-            </Select>
-            <div>
-              <img src={imgPista} alt="" style={{ maxWidth: '150px' }} />
-            </div>
-            <InputLabel>Setor</InputLabel>
-            <Select
-              value={itemSetor}
-              onChange={event => {
-                this.setState({ itemSetor: event.target.value });
-              }}
-            >
-              {setores.map(item => (
-                <MenuItem key={item.id} value={item.id}>
-                  {item.id}
-                </MenuItem>
-              ))}
-            </Select>
-            <br />
-            <br />
-            <form>
-              <h2>Calibracao</h2>
-              <input
-                type="text"
-                placeholder={'Nome da calibração'}
-                value={nomeCalibracao}
-                onChange={event => {
-                  this.setState({ nomeCalibracao: event.target.value });
-                }}
+            />
+            {this.state.calibracao.map((calibracao, idx) => (
+              <div
+                key={idx}
+                className="calibracao"
                 style={{
-                  marginBottom: 10,
+                  borderRadius: 5,
                 }}
-              />
-              <br />
-              {this.state.calibracao.map((calibracao, idx) => (
-                <div
-                  key={idx}
-                  className="calibracao"
-                  style={{
-                    borderRadius: 5,
-                  }}
-                >
-                  <input
-                    type="text"
-                    placeholder={'Nome'}
-                    value={calibracao.nome}
-                    onChange={this.handleCalibracaoNameChange(idx)}
-                    style={{
-                      marginRight: 10,
-                    }}
-                  />
+              >
+                <p>
+                  {calibracao.nome} {' : '}
                   <input
                     type="text"
                     placeholder={'Valor'}
@@ -242,49 +234,21 @@ export default class Calibracao extends Component {
                       marginRight: 10,
                     }}
                   />
-                  <Button
-                    type="button"
-                    onClick={this.handleRemoveCalibracao(idx)}
-                    className="small"
-                    style={{
-                      backgroundColor: '#7159c1',
-                      marginBottom: 10,
-                    }}
-                  >
-                    Excluir
-                  </Button>
-                </div>
-              ))}
-              <Button
-                type="button"
-                onClick={this.handleAddCalibracao}
-                className="small"
-                style={{
-                  backgroundColor: '#7159c1',
-                  marginRight: 10,
-                  marginBottom: 10,
-                }}
-              >
-                Novo Campo
-                <FaPlus
-                  style={{
-                    marginLeft: 10,
-                  }}
-                />
-              </Button>
-              <Button
-                onClick={this.handleSubmit}
-                style={{
-                  backgroundColor: '#7159c1',
-                  marginBottom: 10,
-                }}
-              >
-                Adicionar calibracao
-              </Button>
-            </form>
-          </div>
-        </>
-      );
-    }
+                </p>
+              </div>
+            ))}
+            <Button
+              onClick={this.handleSubmit}
+              style={{
+                backgroundColor: '#7159c1',
+                marginBottom: 10,
+              }}
+            >
+              Adicionar calibracao
+            </Button>
+          </form>
+        </div>
+      </>
+    );
   }
 }

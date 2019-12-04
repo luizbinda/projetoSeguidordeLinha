@@ -8,7 +8,6 @@ import File from '../app/models/File';
 import Log from '../app/models/Log';
 import Pista from '../app/models/Pista';
 import Setor from '../app/models/Setor';
-import SetorCalibracaoCarrinho from '../app/models/SetorCalibracaoCarrinho';
 import Tentativa from '../app/models/Tentativa';
 import TipoDadoCalibracaoCarrinho from '../app/models/TipoDadoCalibracaoCarrinho';
 import TipoDadoLog from '../app/models/TipoDadoLog';
@@ -28,7 +27,6 @@ const models = [
   DadoCalibracaoCarrinho,
   TipoDadoLog,
   Tentativa,
-  SetorCalibracaoCarrinho,
   Log,
   DadoLog,
   File,

@@ -12,13 +12,16 @@ class CalibrationCarController {
       nome: Yup.string().required(),
       carrinho: Yup.number().required(),
       dados: Yup.array().required(),
+      setor: Yup.number(),
     });
+
+    const data_atual = `${Date.now()}`;
 
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ erro: 'erro de validação' });
     }
 
-    const { nome, carrinho, dados } = req.body;
+    const { nome, carrinho, dados, setor } = req.body;
 
     const carExitis = await Carrinho.findOne({ where: { id: carrinho } });
 
@@ -38,7 +41,9 @@ class CalibrationCarController {
 
     const { id } = await CalibracaoCarrinho.create({
       nome,
+      data: data_atual,
       fk_Carrinho_id: car_id,
+      fk_Setor_id: setor,
     });
 
     for (const dado of dados) {
@@ -72,12 +77,14 @@ class CalibrationCarController {
       id,
       nome,
       car_id,
+      data_atual,
     });
   }
 
   async index(req, res) {
-    const carrinhos = await CalibracaoCarrinho.findAll({
-      attributes: ['nome'],
+    const calibracao = await CalibracaoCarrinho.findAll({
+      where: { fk_Carrinho_id: req.params.id },
+      attributes: ['id', 'nome', 'data'],
       include: [
         {
           model: Carrinho,
@@ -95,7 +102,35 @@ class CalibrationCarController {
         },
       ],
     });
-    return res.json(carrinhos);
+    return res.json(calibracao);
+  }
+
+  async show(req, res) {
+    const calibracao = await CalibracaoCarrinho.findAll({
+      where: { fk_Carrinho_id: req.params.id },
+      attributes: ['nome', 'data'],
+      include: [
+        {
+          model: Carrinho,
+          attributes: ['nome'],
+        },
+        {
+          model: DadoCalibracaoCarrinho,
+          attributes: ['valor'],
+          include: [
+            {
+              model: TipoDadoCalibracaoCarrinho,
+              attributes: ['nome'],
+            },
+          ],
+        },
+      ],
+      order: [['data', 'DESC']],
+      limit: 1,
+    });
+
+    const retorno = calibracao[0];
+    return res.json(retorno);
   }
 }
 

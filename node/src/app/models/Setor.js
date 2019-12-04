@@ -23,7 +23,7 @@ class Setor extends Model {
 
   static associate(models) {
     this.belongsTo(models.Pista, { foreignKey: 'fk_Pista_id' });
-    this.hasMany(models.SetorCalibracaoCarrinho, {
+    this.hasMany(models.CalibracaoCarrinho, {
       foreignKey: 'fk_Setor_id',
     });
   }
