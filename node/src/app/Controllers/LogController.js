@@ -57,7 +57,7 @@ class LogController {
   }
 
   async show(req, res) {
-    const log = await Log.findAll({
+    const logs = await Log.findAll({
       where: { fk_CalibracaoCarrinho_id: req.params.id },
       attributes: [
         'id',
@@ -102,6 +102,7 @@ class LogController {
         },
       ],
     });
+    const log = logs[0];
     return res.json(log);
   }
 }

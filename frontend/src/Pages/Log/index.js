@@ -5,7 +5,6 @@ import { getToken } from '../../services/auth';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import Lista from '../../components/Lista';
 
 import api from '../../services/api';
 
@@ -16,6 +15,7 @@ export default class Log extends Component {
     itemCarrinho: '',
     itemCalibracao: '',
     calibracao: [],
+    log: '',
   };
 
   async componentDidMount() {
@@ -30,10 +30,7 @@ export default class Log extends Component {
   }
 
   async componentDidUpdate(_, prevState) {
-    if (
-      prevState.itemCarrinho !== this.state.itemCarrinho &&
-      this.state.itemPista !== ''
-    ) {
+    if (prevState.itemCarrinho !== this.state.itemCarrinho) {
       const calibracao = await api.get(
         `/calibrations/${this.state.itemCarrinho}`
       );
@@ -47,15 +44,24 @@ export default class Log extends Component {
         this.setState({ calibracao: dados });
       });
     }
+
+    if (prevState.itemCalibracao !== this.state.itemCalibracao) {
+      const log = await api.get(`/log/${this.state.itemCalibracao}`);
+      this.setState({ log: log.data });
+    }
   }
-  handleSubmit = async evt => {
-    evt.preventDefault();
-  };
 
   render() {
-    const { carrinhos, itemCarrinho, calibracao, itemCalibracao } = this.state;
+    const {
+      carrinhos,
+      itemCarrinho,
+      calibracao,
+      itemCalibracao,
+      log,
+    } = this.state;
     const lista_carrinhos = [];
     carrinhos.forEach(carrinho => lista_carrinhos.push(carrinho.Carrinho));
+    console.log(log);
 
     return (
       <>
@@ -69,35 +75,50 @@ export default class Log extends Component {
           }}
         >
           <h2>Logs</h2>
-          <br />
-          <InputLabel>Carrinho</InputLabel>
-          <Select
-            value={itemCarrinho}
-            onChange={event => {
-              this.setState({ itemCarrinho: event.target.value });
+          <div
+            style={{
+              backgroundColor: 'white',
+              marginTop: 20,
+              padding: 5,
+              display: 'flex',
+              flexDirection: 'row',
             }}
           >
-            {lista_carrinhos.map(item => (
-              <MenuItem key={item.id} value={item.id}>
-                {item.nome}
-              </MenuItem>
-            ))}
-          </Select>
-          <br />
-          <br />
-          <InputLabel>Calibração</InputLabel>
-          <Select
-            value={itemCalibracao}
-            onChange={event => {
-              this.setState({ itemCalibracao: event.target.value });
-            }}
-          >
-            {calibracao.map(item => (
-              <MenuItem key={item.id} value={item.id}>
-                {item.nome}
-              </MenuItem>
-            ))}
-          </Select>
+            <div
+              style={{
+                marginRight: 30,
+              }}
+            >
+              <InputLabel>Carrinho</InputLabel>
+              <Select
+                value={itemCarrinho}
+                onChange={event => {
+                  this.setState({ itemCarrinho: event.target.value });
+                }}
+              >
+                {lista_carrinhos.map(item => (
+                  <MenuItem key={item.id} value={item.id}>
+                    {item.nome}
+                  </MenuItem>
+                ))}
+              </Select>
+            </div>
+            <div>
+              <InputLabel>Calibração</InputLabel>
+              <Select
+                value={itemCalibracao}
+                onChange={event => {
+                  this.setState({ itemCalibracao: event.target.value });
+                }}
+              >
+                {calibracao.map(item => (
+                  <MenuItem key={item.id} value={item.id}>
+                    {item.nome}
+                  </MenuItem>
+                ))}
+              </Select>
+            </div>
+          </div>
         </div>
         <br />
         <div
@@ -105,11 +126,34 @@ export default class Log extends Component {
           style={{
             backgroundColor: 'white',
             marginTop: 5,
+            marginBottom: 30,
             borderRadius: 18,
             padding: 30,
           }}
         >
-          <Lista />
+          {log ? (
+            <>
+              <p>Tempo : {log.tempo}</p>
+              <p>Distancia Percorrida : {log.distancia_percorrida}</p>
+              <p>Data : {log.Tentativa.data}</p>
+              <p>Tempo : {log.tempo}</p>
+              <br />
+              <h6>Dados Log</h6>
+              <br />
+              {log.DadoLogs.map(dado => {
+                return (
+                  <>
+                    <p>
+                      {dado.TipoDadoLog.nome} : {dado.erro}
+                    </p>
+                    <p>Tempo : {dado.tempo}</p>
+                  </>
+                );
+              })}
+            </>
+          ) : (
+            <h4>Selecione um carrinho e um calibração</h4>
+          )}
         </div>
       </>
     );
