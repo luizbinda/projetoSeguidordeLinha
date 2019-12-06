@@ -51,18 +51,20 @@ export default class Calibracao extends Component {
     }
 
     if (
-      (prevState.itemPista !== this.state.itemPista &&
-        this.state.itemPista !== '') ||
+      prevState.itemPista !== this.state.itemPista ||
       (prevState.itemCarrinho !== this.state.itemCarrinho &&
-        this.state.itemPista !== '')
+        this.state.itemPista !== '') ||
+      (prevState.itemSetor !== this.state.itemSetor &&
+        this.state.itemSetor !== '')
     ) {
       const calibracao = await api.get(
         `/calibration/${this.state.itemCarrinho}`
       );
-      calibracao.data.DadoCalibracaoCarrinhos.forEach(
+      calibracao.data.calibracao.DadoCalibracaoCarrinhos.forEach(
         DadoCalibracaoCarrinhos => {
           const dado = {
-            nome: DadoCalibracaoCarrinhos.TipoDadoCalibracaoCarrinho.nome,
+            idTipoDadocalibracao:
+              DadoCalibracaoCarrinhos.fk_TipoDadoCalibracaoCarrinho_id,
             valor: DadoCalibracaoCarrinhos.valor,
           };
           const dados = [dado, ...this.state.calibracao];
@@ -70,7 +72,34 @@ export default class Calibracao extends Component {
         }
       );
 
-      this.setState({ nomeCalibracao: calibracao.data.nome });
+      const tipoCalibracao = calibracao.data.tipoCalibracao;
+
+      const tipoCalibracaoDados = tipoCalibracao.map(tipoCalibracao => {
+        const dado = {
+          id: tipoCalibracao.id,
+          nome: tipoCalibracao.nome,
+          valor: 0,
+        };
+
+        return dado;
+      });
+
+      tipoCalibracaoDados.forEach((TipoCalibracao, index) => {
+        this.state.calibracao.forEach(Calibracao => {
+          if (TipoCalibracao.id === Calibracao.idTipoDadocalibracao) {
+            tipoCalibracaoDados[index] = {
+              id: tipoCalibracaoDados[index].id,
+              nome: tipoCalibracaoDados[index].nome,
+              valor: Calibracao.valor,
+            };
+          }
+        });
+      });
+
+      this.setState({
+        nomeCalibracao: calibracao.data.calibracao.nome,
+        calibracao: tipoCalibracaoDados,
+      });
     }
   }
 
@@ -92,9 +121,13 @@ export default class Calibracao extends Component {
     this.setState({ calibracao: newcalibracao });
   };
 
+  handleValorTipoCalibracao = idx => () => {};
+
   handleSubmit = async evt => {
     evt.preventDefault();
-    const dados = this.state.calibracao;
+    const dados = this.state.calibracao.filter(
+      calibracao => calibracao.valor > 0
+    );
     const { itemCarrinho, nomeCalibracao, itemSetor } = this.state;
     if (!nomeCalibracao || !itemCarrinho || !itemSetor || !dados) {
       alert('Preencha todos os campos');
@@ -115,7 +148,7 @@ export default class Calibracao extends Component {
 
     this.setState({
       nomeCalibracao: '',
-      calibracao: [{ nome: '', valor: '' }],
+      calibracao: [],
     });
   };
 
@@ -141,6 +174,7 @@ export default class Calibracao extends Component {
       itemCarrinho,
       nomeCalibracao,
       imgPista,
+      calibracao,
     } = this.state;
     const lista_carrinhos = [];
     carrinhos.forEach(carrinho => lista_carrinhos.push(carrinho.Carrinho));
@@ -204,18 +238,21 @@ export default class Calibracao extends Component {
           <br />
           <form>
             <h2>Calibracao</h2>
-            <input
-              type="text"
-              placeholder={'Nome da calibração'}
-              value={nomeCalibracao}
-              onChange={event => {
-                this.setState({ nomeCalibracao: event.target.value });
-              }}
-              style={{
-                marginBottom: 10,
-              }}
-            />
-            {this.state.calibracao.map((calibracao, idx) => (
+            <p>
+              Nome Calibração :{' '}
+              <input
+                type="text"
+                placeholder={'Nome da calibração'}
+                value={nomeCalibracao}
+                onChange={event => {
+                  this.setState({ nomeCalibracao: event.target.value });
+                }}
+                style={{
+                  marginBottom: 10,
+                }}
+              />
+            </p>
+            {calibracao.map((tipoCalibracao, idx) => (
               <div
                 key={idx}
                 className="calibracao"
@@ -224,11 +261,11 @@ export default class Calibracao extends Component {
                 }}
               >
                 <p>
-                  {calibracao.nome} {' : '}
+                  {tipoCalibracao.nome} {' : '}
                   <input
                     type="text"
                     placeholder={'Valor'}
-                    value={calibracao.valor}
+                    value={tipoCalibracao.valor}
                     onChange={this.handleCalibracaoValorChange(idx)}
                     style={{
                       marginRight: 10,

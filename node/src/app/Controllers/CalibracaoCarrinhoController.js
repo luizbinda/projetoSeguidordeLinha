@@ -116,20 +116,17 @@ class CalibrationCarController {
         },
         {
           model: DadoCalibracaoCarrinho,
-          attributes: ['valor'],
-          include: [
-            {
-              model: TipoDadoCalibracaoCarrinho,
-              attributes: ['nome'],
-            },
-          ],
+          attributes: ['valor', 'fk_TipoDadoCalibracaoCarrinho_id'],
         },
       ],
       order: [['data', 'DESC']],
       limit: 1,
     });
 
-    const retorno = calibracao[0];
+    const tipoCalibracao = await TipoDadoCalibracaoCarrinho.findAll();
+
+    const retorno = { calibracao: calibracao[0], tipoCalibracao };
+
     return res.json(retorno);
   }
 }
