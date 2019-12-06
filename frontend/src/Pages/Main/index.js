@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
 
 import Container from '../../components/Container';
 import { Form, SubmitButton } from './styles';
 import api from '../../services/api';
+import Routes from '../../routes';
 
 import { login, setLogado } from '../../services/auth';
 
@@ -44,7 +44,7 @@ export default class Main extends Component {
   render() {
     const { redirect } = this.state;
     if (redirect) {
-      return <Redirect to={{ pathname: '/calibracao' }} />;
+      return <Routes />;
     } else {
       return (
         <Container>
